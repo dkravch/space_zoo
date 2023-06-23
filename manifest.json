@@ -1,0 +1,9 @@
+{
+    "id": "space-zoo-obsidian",
+    "name": "Space Zoo",
+    "author": "Denis Kravchenko",
+    "description": "Pack of helpers to deal with all kind of empty strings in selected text",
+    "version": "1.0.0",
+    "minAppVersion": "1.0.0",
+    "js": "main.js"
+  }
