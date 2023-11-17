@@ -2,6 +2,24 @@
 
 var obsidian = require('obsidian');
 
+
+
+class ExampleModal extends obsidian.Modal {
+
+    constructor(app, message) {
+        super(app);
+        this.message = message;
+    }
+
+    onOpen() {
+        let contentEl = this.contentEl;
+        contentEl.setText(this.message);
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 class SpaceMonkeyPlugin extends obsidian.Plugin {
   async onload() {
 
@@ -24,7 +42,7 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
 
     this.addCommand({
         id: 'space-monkey-command',
-        name: 'Space Monkey',
+        name: 'Space Monkey',  // Remove all empty lines in selection
 
         editorCallback: (editor, view) => {
 
@@ -48,7 +66,7 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
 
     this.addCommand({
         id: 'space-panda-command',
-        name: 'Space Panda',
+        name: 'Space Panda',  // Collapse blocks of 3 or more empty lines into 2, leaves single empty lines intact
 
         editorCallback: (editor, view) => {
 
@@ -95,7 +113,7 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
 
     this.addCommand({
         id: 'space-mouse-command',
-        name: 'Space Mouse',
+        name: 'Space Mouse',  // Trim each of selected lines
 
         editorCallback: (editor, view) => {
 
@@ -146,6 +164,10 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
               console.log('All lines are valid.');
             } else {
               console.log('The following lines are not valid:', invalidLines.join(', '));
+
+              const modal = new ExampleModal(app, "Cannot proceed to rearrange selected list, lines are not similar " +
+                  "(different indentations etc)!");
+              modal.open();
               return;
             }
 
