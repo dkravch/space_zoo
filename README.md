@@ -15,3 +15,7 @@ Trim spaces at the end of lines in selected text
 
 ## Space Porcupine
 Sort selected checkbox list by checkbox type 
+
+
+## Space Raven
+Delete empty notes from 'DAILY' folder

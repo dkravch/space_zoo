@@ -4,7 +4,7 @@ var obsidian = require('obsidian');
 
 
 
-class ExampleModal extends obsidian.Modal {
+class MyModal extends obsidian.Modal {
 
     constructor(app, message) {
         super(app);
@@ -13,7 +13,7 @@ class ExampleModal extends obsidian.Modal {
 
     onOpen() {
         let contentEl = this.contentEl;
-        contentEl.setText(this.message);
+        contentEl.innerHTML = this.message
     }
 }
 
@@ -140,6 +140,64 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     this.addCommand({
+            id: 'space-raven-command',
+            name: 'Space Raven',  // Rid empty daily notes
+
+            editorCallback: (editor, view) => {
+                const files = app.vault.getAllLoadedFiles();
+
+                const note_text_promises = [];
+                let notes = [];
+
+                for (const item of files) {
+                    if (item.path.startsWith("DAILY") &&
+                        !item.path.startsWith("DAILY/DONE") &&
+                        !item.path.startsWith("DAILY/REMINDER") &&
+                        !('children' in item) ) {
+                        //console.log(item.path, item.type)
+                        let note_text_promise = app.vault.cachedRead(item);
+                        notes.push(item);
+                        note_text_promises.push(note_text_promise);
+                    }
+                }
+
+
+                Promise.all(note_text_promises).then((fulfilled_promise_texts) => {
+
+                    const result = [];
+
+                    fulfilled_promise_texts.forEach((text_value, index) => {
+
+                        if (text_value.trim().length === 0) {
+
+                            // Construct paths
+                            const path = notes[index].path
+                            result.push(path)
+
+                            // Move the file to the new path
+                            app.vault.delete(notes[index], false).then(() => {
+                                console.log(`Note ${path} deleted`);
+                            }).catch((error) => {
+                                console.error("Error deleting the note:", error);
+                            });
+
+                        }
+                    })
+
+
+                    const message = "Notes <i>" + result + "</i> were deleted.";
+                    const modal = new MyModal(app, message);
+                    modal.open();
+
+                })
+
+            },
+        });
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    this.addCommand({
         id: 'space-porcupine-command',
         name: 'Space Porcupine',
 
@@ -165,7 +223,7 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
             } else {
               console.log('The following lines are not valid:', invalidLines.join(', '));
 
-              const modal = new ExampleModal(app, "Cannot proceed to rearrange selected list, lines are not similar " +
+              const modal = new MyModal(app, "Cannot proceed to rearrange selected list, lines are not similar " +
                   "(different indentations etc)!");
               modal.open();
               return;
