@@ -140,6 +140,52 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     this.addCommand({
+        id: 'space-fossa-command',
+        name: 'Space Fossa',  // Select list upper and lower of cursor position
+
+        editorCallback: (editor, view) => {
+
+            const cursor = editor.getCursor(); // Get current cursor position
+            const lines = editor.getValue().split("\n"); // Get all lines
+            const currentLineIndex = cursor.line;
+
+            // Determine the range of lines to select
+            let startLine = currentLineIndex;
+            let endLine = currentLineIndex;
+
+            // Check lines above (including the current one)
+            for (let i = currentLineIndex; i >= 0; i--) {
+                if (lines[i].startsWith("- [")) {
+                    startLine = i; // Update the starting line
+                } else {
+                    break; // Stop if the line doesn't start with '- ['
+                }
+            }
+
+            // Check lines below
+            for (let i = currentLineIndex + 1; i < lines.length; i++) {
+                if (lines[i].startsWith("- [")) {
+                    endLine = i; // Update the ending line
+                } else {
+                    break; // Stop if the line doesn't start with '- ['
+                }
+            }
+
+            // Highlight the selected lines in the editor
+            editor.setSelection(
+                { line: startLine, ch: 0 }, // Start of the first list line
+                { line: endLine, ch: lines[endLine].length } // End of the last list line
+            );
+
+            // Optional: Display in editor or use in a meaningful way
+            new Notice(`Selected lines from ${startLine + 1} to ${endLine + 1}.`);
+
+        },
+    });
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    this.addCommand({
             id: 'space-raven-command',
             name: 'Space Raven',  // Rid empty daily notes
 
@@ -203,6 +249,41 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
 
         editorCallback: (editor, view) => {
 
+
+            // Preparation to select whole list
+            const cursor = editor.getCursor(); // Get current cursor position
+            const all_lines = editor.getValue().split("\n"); // Get all lines
+            const currentLineIndex = cursor.line;
+
+            // Determine the range of lines to select
+            let startLine = currentLineIndex;
+            let endLine = currentLineIndex;
+
+            // Check lines above (including the current one)
+            for (let i = currentLineIndex; i >= 0; i--) {
+                if (all_lines[i].startsWith("- [")) {
+                    startLine = i; // Update the starting line
+                } else {
+                    break; // Stop if the line doesn't start with '- ['
+                }
+            }
+
+            // Check lines below
+            for (let i = currentLineIndex + 1; i < all_lines.length; i++) {
+                if (all_lines[i].startsWith("- [")) {
+                    endLine = i; // Update the ending line
+                } else {
+                    break; // Stop if the line doesn't start with '- ['
+                }
+            }
+
+            // Highlight the selected lines in the editor
+            editor.setSelection(
+                { line: startLine, ch: 0 }, // Start of the first list line
+                { line: endLine, ch: all_lines[endLine].length } // End of the last list line
+            );
+
+            // Get previously highlighted selection
             const selection = editor.getSelection()
 
             // Split the text into an array of lines
