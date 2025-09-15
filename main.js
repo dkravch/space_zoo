@@ -23,20 +23,26 @@ class MyModal extends obsidian.Modal {
 class SpaceMonkeyPlugin extends obsidian.Plugin {
   async onload() {
 
-    this.registerMarkdownPostProcessor((element, context) => {
-      element.addEventListener("contextmenu", function (event) {
+    // // Makes selected text uppercase in Preview mode
+    // this.registerMarkdownPostProcessor((element, context) => {
+    //   element.addEventListener("contextmenu", function (event) {
+    //
+    //     const selection = window.getSelection().toString();
+    //
+    //     if (selection) {
+    //       const transformedSelection = selection.toUpperCase();
+    //       const range = window.getSelection().getRangeAt(0);
+    //       range.deleteContents();
+    //       range.insertNode(document.createTextNode(transformedSelection));
+    //       event.preventDefault();
+    //     }
+    //   });
+    // });
 
-        const selection = window.getSelection().toString();
-
-        if (selection) {
-          const transformedSelection = selection.toUpperCase();
-          const range = window.getSelection().getRangeAt(0);
-          range.deleteContents();
-          range.insertNode(document.createTextNode(transformedSelection));
-          event.preventDefault();
-        }
-      });
-    });
+    // // Wireframe for own fortune cookie
+    // this.app.workspace.onLayoutReady(() => {
+    //       new obsidian.Notice("\n    Space Banana!    \n\n", 7000);
+    //     });
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -245,13 +251,13 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
 
     this.addCommand({
         id: 'space-porcupine-command',
-        name: 'Space Porcupine',
+        name: 'Space Porcupine',  // Rearrange selected list
 
         editorCallback: (editor, view) => {
 
 
             // Preparation to select whole list
-            const cursor = editor.getCursor(); // Get current cursor position
+            const cursor = editor.getCursor(); // Get the current cursor position
             const all_lines = editor.getValue().split("\n"); // Get all lines
             const currentLineIndex = cursor.line;
 
@@ -259,7 +265,7 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
             let startLine = currentLineIndex;
             let endLine = currentLineIndex;
 
-            // Check lines above (including the current one)
+            // Check the lines above (including the current one)
             for (let i = currentLineIndex; i >= 0; i--) {
                 if (all_lines[i].startsWith("- [")) {
                     startLine = i; // Update the starting line
@@ -320,11 +326,18 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
             });
 
 
-            const result = lines.join('\n') + '\n';
+            const result = lines.join('\n');
 
             editor.replaceSelection(result);
 
         },
+                hotkeys: [
+        {
+            modifiers: ["Ctrl", "Shift"], // Modifier keys
+            key: "P", // The main key for the hotkey
+        },
+    ],
+
     });
 
   }
