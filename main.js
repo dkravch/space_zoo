@@ -145,6 +145,28 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+    this.addCommand({
+        id: 'space-elephant-command',
+        name: 'Space Elephant',  // Remove ![...](...) from selected text
+
+        editorCallback: (editor, view) => {
+
+            const sel = editor.getSelection();
+
+            // Regex to match Markdown images: ![alt](url)
+            // - alt text: anything except ]
+            // - url: anything except )
+            const imageRegex = /!\[[^\]]*?\]\([^)]+\)/g;
+
+            const output = sel.replace(imageRegex, '');
+
+            editor.replaceSelection(output);
+        },
+    });
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     this.addCommand({
         id: 'space-fossa-command',
         name: 'Space Fossa',  // Select list upper and lower of cursor position
