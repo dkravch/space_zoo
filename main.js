@@ -2,8 +2,6 @@
 
 var obsidian = require('obsidian');
 
-
-
 class MyModal extends obsidian.Modal {
 
     constructor(app, message) {
@@ -48,7 +46,7 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
 
     this.addCommand({
         id: 'space-monkey-command',
-        name: 'Space Monkey',  // Remove all empty lines in selection
+        name: 'Space Monkey (remove all empty lines in selection)',
 
         editorCallback: (editor, view) => {
 
@@ -72,7 +70,7 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
 
     this.addCommand({
         id: 'space-panda-command',
-        name: 'Space Panda',  // Collapse blocks of 3 or more empty lines into 2, leaves single empty lines intact
+        name: 'Space Panda (collapse >=3 of empty lines into 2, leaves single empty lines intact)',
 
         editorCallback: (editor, view) => {
 
@@ -119,7 +117,7 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
 
     this.addCommand({
         id: 'space-mouse-command',
-        name: 'Space Mouse',  // Trim each of selected lines
+        name: 'Space Mouse (trim each of selected lines)',
 
         editorCallback: (editor, view) => {
 
@@ -148,7 +146,7 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
 
     this.addCommand({
         id: 'space-elephant-command',
-        name: 'Space Elephant',  // Remove ![...](...) from selected text
+        name: 'Space Elephant (remove ![...](...) pics from selected text)',
 
         editorCallback: (editor, view) => {
 
@@ -168,8 +166,29 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     this.addCommand({
+        id: 'space-capybara-command',
+        name: 'Space Capybara (remove emoji from selected text)',
+
+        editorCallback: (editor, view) => {
+
+            const sel = editor.getSelection();
+
+            const output = sel
+                .replace(/[0-9#*]\uFE0F?\u20E3/g, '')       // keycap emoji
+                .replace(/\p{Extended_Pictographic}/gu, '') // most emojis
+                .replace(/[\uFE0F\u200D]/g, '');             // leftovers
+
+            editor.replaceSelection(output);
+        },
+    });
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    this.addCommand({
         id: 'space-fossa-command',
-        name: 'Space Fossa',  // Select list upper and lower of cursor position
+        name: 'Space Fossa (select list up and down of cursor position)',
 
         editorCallback: (editor, view) => {
 
@@ -215,7 +234,7 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
 
     this.addCommand({
             id: 'space-raven-command',
-            name: 'Space Raven',  // Rid empty daily notes
+            name: 'Space Raven (rid empty daily notes)',
 
             editorCallback: (editor, view) => {
                 const files = app.vault.getAllLoadedFiles();
@@ -273,7 +292,7 @@ class SpaceMonkeyPlugin extends obsidian.Plugin {
 
     this.addCommand({
         id: 'space-porcupine-command',
-        name: 'Space Porcupine',  // Rearrange selected list
+        name: 'Space Porcupine (rearrange selected list)',
 
         editorCallback: (editor, view) => {
 
